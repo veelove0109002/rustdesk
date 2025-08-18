@@ -22,7 +22,7 @@ jobs:
       
       - name: 添加上游仓库
         run: |
-          git remote add upstream ${{ vars.UPSTREAM_REPO || github.repository_owner }}/$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+          git remote add upstream https://github.com/rustdesk/rustdesk.git
           git fetch upstream
       
       - name: 合并上游更改
