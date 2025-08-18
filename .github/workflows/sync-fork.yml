@@ -1,0 +1,35 @@
+name: 自动同步 Fork
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 每 10 分钟运行一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: 配置 Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+      
+      - name: 添加上游仓库
+        run: |
+          git remote add upstream ${{ vars.UPSTREAM_REPO || github.repository_owner }}/$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+          git fetch upstream
+      
+      - name: 合并上游更改
+        run: |
+          git checkout ${{ github.ref_name }}
+          git merge upstream/${{ github.ref_name }} --no-edit
+      
+      - name: 推送更改
+        run: |
+          git push origin ${{ github.ref_name }}
