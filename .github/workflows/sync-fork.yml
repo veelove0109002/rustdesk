@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '*/10 * * * *'  # 每 10 分钟运行一次
   workflow_dispatch:  # 允许手动触发
+  push:
+    branches: [ main, master ]  # 当推送到主分支时也触发
 
 jobs:
   sync:
